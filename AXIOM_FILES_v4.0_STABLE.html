@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Λ X I O M  F I L E S — LUA PÁLIDA</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Share Tech Mono',monospace;background:#0a0a0f;color:#e0e0ff;min-height:100vh}
+#app{display:block;min-height:100vh}
+.header{background:#a40000;border-bottom:4px solid #fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;color:#fff}
+.logo-text{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;letter-spacing:4px}
+.logo-sub{font-size:10px;opacity:.75;letter-spacing:2px}
+.header-right{display:flex;flex-wrap:wrap;gap:5px}
+.btn{background:#fff;border:1px solid #111;color:#111;font-family:'Share Tech Mono',monospace;font-size:11px;padding:7px 11px;cursor:pointer;letter-spacing:1px;text-transform:uppercase}
+.btn:hover{filter:brightness(1.1)}
+.btn-red{background:#a40000;color:#fff;border-color:#fff}
+.btn-black{background:#111;color:#fff;border-color:#fff}
+.btn-gold{background:#c49a00;color:#111}
+.btn-purple{background:#7b2d8e;color:#fff}
+.btn-cyan{background:#fff;color:#111}
+.btn-orange{background:#c45a00;color:#fff}
+.main-container{display:grid;grid-template-columns:220px 1fr 260px;min-height:calc(100vh - 65px)}
+@media(max-width:1100px){.main-container{grid-template-columns:1fr}.panel-left,.panel-right{display:none}}
+.panel-left,.panel-right{background:#111;padding:12px;overflow-y:auto}
+.panel-left{border-right:3px solid #a40000}
+.panel-right{border-left:3px solid #a40000}
+.panel-title{font-family:'Orbitron',monospace;font-size:10px;color:#888;letter-spacing:2px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #333}
+.nav-item{padding:6px 10px;margin-bottom:2px;cursor:pointer;font-size:12px;color:#aaa;border-left:3px solid transparent}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.05)}
+.nav-item.active{color:#00f0ff;border-left-color:#00f0ff}
+.panel-center{background:#ddd;overflow-y:auto;max-height:calc(100vh - 65px)}
+.center-header{padding:10px 14px;background:#fff;border-bottom:4px solid #111;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.center-title{font-family:'Orbitron',monospace;font-size:13px;color:#111}
+.entries-container{padding:14px}
+.entry-card{background:#fff;color:#111;border:1px solid #888;border-left:12px solid var(--c,#1d7f3b);margin-bottom:14px;box-shadow:4px 5px 0 rgba(0,0,0,.18)}
+.entry-card::before{content:'LUA PÁLIDA // AXIOM FILE';display:block;background:#111;color:#fff;padding:5px 10px;font-size:10px;letter-spacing:2px;font-weight:bold}
+.entry-header{display:flex;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #bbb;gap:8px}
+.entry-title{font-weight:900;font-size:13px;flex:1}
+.entry-timestamp{font-size:10px;color:#666}
+.entry-content{padding:12px;font-size:12px;line-height:1.5;color:#222;word-break:break-word}
+.entry-content img{max-width:100%;max-height:320px;display:block;margin:6px auto;border:1px solid #ccc}
+.entry-content video,.entry-content audio{max-width:100%;display:block;margin:6px 0}
+.entry-content a{color:#003f9e;font-weight:800}
+.entry-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;background:#eee;border-top:1px solid #bbb}
+.entry-status{font-size:9px;color:#555;padding:2px 6px;border:1px solid #999}
+.axiom-classification{display:inline-block;padding:2px 6px;color:#fff;font-weight:900;font-size:9px;margin-left:6px}
+.axiom-restricted{background:#fff0f0;color:#a40000;border:2px solid #a40000;padding:14px;text-align:center;font-weight:900}
+.file-download-box{background:#f0f0f0;border:2px dashed #999;padding:14px;text-align:center}
+.new-entry-form{background:#fff;border:3px solid #111;border-left:10px solid #a40000;padding:14px;margin:12px;color:#111}.drop-hover{outline:3px dashed #00f0ff}
+.new-entry-form.hidden{display:none}
+.modal-field{margin-bottom:10px}
+.modal-label{display:block;font-size:11px;color:#555;margin-bottom:3px;text-transform:uppercase;font-weight:700}
+.modal-input,.modal-textarea,.modal-select{width:100%;background:#f8f8f8;border:1px solid #333;color:#111;font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 10px;outline:none}
+.modal-textarea{min-height:70px;resize:vertical}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.axiom-color-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:4px}
+.axiom-color-row button{padding:7px 2px;border:2px solid #222;cursor:pointer;font-weight:900;font-size:10px}
+.axiom-color-row button.selected{outline:3px solid #555}
+.axiom-red{background:#a40000;color:#fff}
+.axiom-yellow{background:#c49a00;color:#111}
+.axiom-green{background:#1d7f3b;color:#fff}
+.axiom-blue{background:#003f9e;color:#fff}
+.axiom-purple{background:#5a1a7a;color:#fff}
+.axiom-black{background:#111;color:#fff}
+.axiom-orange{background:#c45a00;color:#fff}
+.axiom-white{background:#e8e8e8;color:#111;border:2px solid #333}
+.status-bar{font-size:10px;color:#888;padding:5px 12px;border-top:3px solid #a40000;background:#111;display:flex;justify-content:space-between}
+.flash-message{position:fixed;bottom:20px;right:20px;background:#111;border:2px solid #00f0ff;color:#00f0ff;padding:10px 16px;font-size:12px;z-index:9999;opacity:0;transition:all .3s;pointer-events:none}
+.flash-message.active{opacity:1}
+.flash-message.error{border-color:#ff0044;color:#ff0044}
+.flash-message.success{border-color:#00ff88;color:#00ff88}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:4000;align-items:center;justify-content:center;padding:14px}
+.modal-overlay.active{display:flex}
+.modal-box{background:#111;border:2px solid #a40000;max-width:620px;width:100%;max-height:85vh;overflow-y:auto;padding:18px;color:#eee}
+.modal-title{font-family:'Orbitron',monospace;font-size:14px;color:#00f0ff;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #333}
+.debug-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:5000;padding:20px}
+.debug-overlay.active{display:block}
+.debug-console{background:#050508;border:1px solid #ff0044;padding:12px;font-size:12px;color:#00ff88;min-height:200px;max-height:50vh;overflow-y:auto;white-space:pre-wrap}
+.complete-section{border:1px dashed #999;padding:10px;margin-bottom:8px;background:#fafafa}
+.complete-section-title{font-size:11px;font-weight:900;color:#555;margin-bottom:6px;text-transform:uppercase}
+.file-list{font-size:11px;color:#333;margin-top:4px}
+.file-list div{padding:3px 0}
+.tag-header{font-family:'Orbitron',monospace;background:#111;color:#00f0ff;padding:10px 14px;margin:20px 0 12px;border-left:5px solid #a40000;letter-spacing:2px;font-size:13px;font-weight:900;display:flex;align-items:center;gap:8px;box-shadow:3px 3px 0 rgba(0,0,0,.25)}
+.tag-header .tag-count{font-size:10px;color:#888;font-weight:400;letter-spacing:1px;margin-left:auto}
+.tag-header.sem-tag{border-left-color:#555;color:#aaa}
+.nav-tag{padding:5px 10px;margin-bottom:2px;cursor:pointer;font-size:11px;color:#999;border-left:3px solid transparent}
+.nav-tag:hover{color:#fff;background:rgba(255,255,255,.05)}
+.nav-tag.active{color:#c49a00;border-left-color:#c49a00}
+</style>
+</head>
+<body>
+<div id="flashMessage" class="flash-message"></div>
+<div id="debugOverlay" class="debug-overlay">
+  <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+    <div style="font-family:Orbitron,monospace;color:#ff0044;font-size:16px">⚡ DEBUG</div>
+    <button class="btn btn-red" id="btnCloseDebug">FECHAR</button>
+  </div>
+  <div class="debug-console" id="debugConsole">[ AXIOM ] Sistema online</div>
+  <div style="margin-top:10px;display:flex;gap:8px">
+    <input type="text" id="debugInput" style="flex:1;background:#050508;border:1px solid #ff0044;color:#00ff88;padding:8px;font-family:monospace">
+    <button class="btn btn-red" id="btnDebugExec">EXEC</button>
+  </div>
+</div>
+<div id="app">
+  <div class="header">
+    <div>
+      <div class="logo-text">Λ X I O M</div>
+      <div class="logo-sub">FILES — LUA PÁLIDA</div>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-cyan" id="btnNew">+ NOVA ENTRADA</button>
+      <button class="btn btn-orange" id="btnNewComplete">+ ENTRADA COMPLETA</button>
+      <button class="btn btn-purple" id="btnPass">🔑 SENHAS</button>
+      <button class="btn btn-gold" id="btnKali">⎇ KALI</button>
+      <button class="btn" id="btnDebug">⚡ DEBUG</button>
+      <button class="btn btn-red" id="btnExport">⇧ EXPORT</button>
+      <button class="btn btn-gold" id="btnLoad">⇩ LOAD</button>
+      <button class="btn btn-cyan" id="btnMerge">🔀 MESCLAR</button>
+      <button class="btn btn-cyan" id="btnSave">💾 SAVE</button>
+      <button class="btn btn-black" id="btnClone">⚡ SUPER CLONE</button>
+      <button class="btn btn-red" id="btnControl">⚙ CONTROLE</button>
+    </div>
+  </div>
+  <div class="main-container">
+    <div class="panel-left">
+      <div class="panel-title">NAVEGAÇÃO</div>
+      <div class="nav-item active" data-filter="all">📋 TODAS</div>
+      <div class="nav-item" data-filter="text">📝 TEXTO</div>
+      <div class="nav-item" data-filter="image">🖼 IMAGEM</div>
+      <div class="nav-item" data-filter="link">🔗 LINK</div>
+      <div class="nav-item" data-filter="audio">🎵 ÁUDIO</div>
+      <div class="nav-item" data-filter="video">🎬 VÍDEO</div>
+      <div class="nav-item" data-filter="file">📎 ARQUIVO</div>
+      <div class="nav-item" data-filter="complete">📦 COMPLETA</div>
+      <div style="margin-top:16px">
+        <div class="panel-title">TAGS</div>
+        <div id="tagNav"><div class="nav-tag active" data-tag="">🏷 TODAS AS TAGS</div></div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="panel-title">STATUS</div>
+        <div class="nav-item" style="cursor:default;color:#777;font-size:11px"><span id="statusCount">0</span> entradas</div>
+      </div>
+    </div>
+    <div class="panel-center">
+      <div class="center-header">
+        <div class="center-title" id="centerTitle">📋 TODAS ENTRADAS</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn" id="btnNew2">+ NOVA</button>
+          <button class="btn btn-orange" id="btnNewComplete2">+ COMPLETA</button>
+          <button class="btn" id="btnSelectAll">☐ SELECIONAR</button>
+          <button class="btn btn-red" id="btnDelSelected">✕ DEL</button>
+        </div>
+      </div>
+      <div id="newEntryForm" class="new-entry-form hidden">
+        <div class="modal-field"><label class="modal-label">TÍTULO</label><input type="text" id="newTitle" class="modal-input" placeholder="Título..."></div>
+        <div class="modal-field"><label class="modal-label">TIPO</label>
+          <select id="newType" class="modal-select">
+            <option value="text">📝 Texto</option>
+            <option value="image">🖼 Imagem</option>
+            <option value="link">🔗 Link</option>
+            <option value="audio">🎵 Áudio</option>
+            <option value="video">🎬 Vídeo</option>
+            <option value="file">📎 Arquivo (PDF, ZIP, DOC, qualquer)</option>
+          </select>
+        </div>
+        <div class="modal-field" id="contentWrap"><label class="modal-label">CONTEÚDO / URL</label><textarea id="newContent" class="modal-textarea" placeholder="Texto ou URL..."></textarea></div>
+        <div class="modal-field" id="mediaWrap" style="display:none"><label class="modal-label" id="mediaLabel">ARQUIVO LOCAL</label><input type="file" id="newFile" style="width:100%;padding:7px;border:1px solid #333;background:#fff"><div id="mediaPreview" style="margin-top:6px"></div></div>
+        <div class="modal-field"><label class="modal-label">TAGS</label><input type="text" id="newTags" class="modal-input" placeholder="tag1, tag2"></div>
+        <div class="modal-field"><label class="modal-label">CLASSIFICAÇÃO</label>
+          <div class="axiom-color-row" id="colorRow">
+            <button type="button" class="axiom-red" data-c="red">RESTRITO</button>
+            <button type="button" class="axiom-yellow" data-c="yellow">MÉDIO</button>
+            <button type="button" class="axiom-green selected" data-c="green">SEGURO</button>
+            <button type="button" class="axiom-blue" data-c="blue">INFO</button>
+            <button type="button" class="axiom-purple" data-c="purple">ANOMALIA</button>
+            <button type="button" class="axiom-orange" data-c="orange">KETER</button>
+            <button type="button" class="axiom-black" data-c="black">ADMIN</button>
+            <button type="button" class="axiom-white" data-c="white">NEUTRO</button>
+          </div>
+        </div>
+        <div class="modal-field"><label class="modal-label">SENHA (opcional)</label><input type="text" id="newPassword" class="modal-input" placeholder="Ex: Lazy"></div>
+        <div class="modal-actions"><button class="btn" id="btnCancel">CANCELAR</button><button class="btn btn-red" id="btnAdd">ADICIONAR</button></div>
+      </div>
+      <div id="completeEntryForm" class="new-entry-form hidden">
+        <div style="font-family:Orbitron,monospace;font-size:13px;color:#a40000;margin-bottom:12px;font-weight:900">📦 NOVA ENTRADA COMPLETA</div>
+        <div class="modal-field"><label class="modal-label">TÍTULO</label><input type="text" id="compTitle" class="modal-input" placeholder="Título da entrada completa..."></div>
+        <div class="complete-section"><div class="complete-section-title">📝 Texto</div><textarea id="compText" class="modal-textarea" placeholder="Texto / descrição..."></textarea></div>
+        <div class="complete-section"><div class="complete-section-title">🔗 Links (um por linha)</div><textarea id="compLinks" class="modal-textarea" placeholder="https://exemplo.com&#10;https://outro.com" style="min-height:50px"></textarea></div>
+        <div class="complete-section"><div class="complete-section-title">🖼 Imagens</div><input type="file" id="compImages" accept="image/*" multiple style="width:100%;padding:7px;border:1px solid #333;background:#fff"><div id="compImagesPreview" class="file-list"></div></div>
+        <div class="complete-section"><div class="complete-section-title">🎵 Áudio</div><input type="file" id="compAudio" accept="audio/*" multiple style="width:100%;padding:7px;border:1px solid #333;background:#fff"><div id="compAudioPreview" class="file-list"></div></div>
+        <div class="complete-section"><div class="complete-section-title">🎬 Vídeo</div><input type="file" id="compVideo" accept="video/*" multiple style="width:100%;padding:7px;border:1px solid #333;background:#fff"><div id="compVideoPreview" class="file-list"></div></div>
+        <div class="complete-section"><div class="complete-section-title">📎 Arquivos (PDF, ZIP, DOC, qualquer tipo)</div><input type="file" id="compFiles" multiple style="width:100%;padding:7px;border:1px solid #333;background:#fff"><div id="compFilesPreview" class="file-list"></div></div>
+        <div class="modal-field"><label class="modal-label">TAGS</label><input type="text" id="compTags" class="modal-input" placeholder="tag1, tag2"></div>
+        <div class="modal-field"><label class="modal-label">CLASSIFICAÇÃO</label>
+          <div class="axiom-color-row" id="compColorRow">
+            <button type="button" class="axiom-red" data-c="red">RESTRITO</button>
+            <button type="button" class="axiom-yellow" data-c="yellow">MÉDIO</button>
+            <button type="button" class="axiom-green selected" data-c="green">SEGURO</button>
+            <button type="button" class="axiom-blue" data-c="blue">INFO</button>
+            <button type="button" class="axiom-purple" data-c="purple">ANOMALIA</button>
+            <button type="button" class="axiom-orange" data-c="orange">KETER</button>
+            <button type="button" class="axiom-black" data-c="black">ADMIN</button>
+            <button type="button" class="axiom-white" data-c="white">NEUTRO</button>
+          </div>
+        </div>
+        <div class="modal-field"><label class="modal-label">SENHA (opcional)</label><input type="text" id="compPassword" class="modal-input" placeholder="Ex: Lazy"></div>
+        <div class="modal-actions"><button class="btn" id="btnCancelComplete">CANCELAR</button><button class="btn btn-red" id="btnAddComplete">ADICIONAR COMPLETA</button></div>
+      </div>
+      <div class="entries-container" id="entriesContainer"></div>
+    </div>
+    <div class="panel-right">
+      <div class="panel-title">DETALHES</div>
+      <div id="entryDetails" style="font-size:12px;color:#aaa;line-height:1.5">Selecione uma entrada.</div>
+      <div style="margin-top:16px">
+        <div class="panel-title">BACKUP</div>
+        <button class="btn btn-red" style="width:100%;margin-bottom:5px" id="btnExport2">⇧ EXPORT</button>
+        <button class="btn btn-gold" style="width:100%;margin-bottom:5px" id="btnLoad2">⇩ LOAD</button>
+        <button class="btn btn-cyan" style="width:100%" id="btnSave2">💾 SAVE</button>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span>Λ X I O M FILES // LUA PÁLIDA // v4.0 · Stable</span>
+    <span id="statusTime">—</span>
+  </div>
+</div>
+<script>
+(function(){
+'use strict';
+
+const AXIOM = {
+  ENTRIES: [],
+  PASSWORDS: [],
+  COLOR: 'green',
+  COMP_COLOR: 'green',
+  FILTER: 'all',
+  FILTER_TAG: '',
+  SELECTED: new Set(),
+  UNLOCKED: new Set(),
+  MASTER: 'leafy',
+  MAX_FILE: 200 * 1024 * 1024, // 200 MB
+  DB: null,
+  DB_NAME: 'AXIOM_IDB_V29B',
+  STORE: 'entries',
+  // cache de ObjectURLs para não vazar memória
+  urlCache: new Map()
+};
+
+function uid(){ return 'ax_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function esc(s){ if(s==null)return''; const d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; }
+function fmt(iso){ if(!iso)return'—'; return new Date(iso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function color(c){ return {red:'#a40000',yellow:'#c49a00',green:'#1d7f3b',blue:'#003f9e',purple:'#5a1a7a',black:'#111',orange:'#c45a00',white:'#888'}[c]||'#1d7f3b'; }
+function label(c){ return {red:'RESTRITO',yellow:'MÉDIO',green:'SEGURO',blue:'INFO',purple:'ANOMALIA',black:'ADMIN',orange:'KETER',white:'NEUTRO'}[c]||'SEGURO'; }
+function icon(t){ return {text:'📝',image:'🖼',link:'🔗',audio:'🎵',video:'🎬',file:'📎',complete:'📦'}[t]||'📄'; }
+
+let flashT;
+function flash(msg,type){
+  const el=document.getElementById('flashMessage');
+  el.textContent=msg;
+  el.className='flash-message '+(type||'');
+  el.classList.add('active');
+  clearTimeout(flashT);
+  flashT=setTimeout(()=>el.classList.remove('active'),4000);
+}
+
+/* ========== IndexedDB ========== */
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(AXIOM.DB_NAME,1);
+    req.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains(AXIOM.STORE)){
+        db.createObjectStore(AXIOM.STORE,{keyPath:'id'});
+      }
+    };
+    req.onsuccess=e=>{ AXIOM.DB=e.target.result; resolve(AXIOM.DB); };
+    req.onerror=()=>reject(req.error);
+  });
+}
+function idbPut(entry){
+  return new Promise((resolve,reject)=>{
+    if(!AXIOM.DB) return reject(new Error('DB fechada'));
+    const tx=AXIOM.DB.transaction(AXIOM.STORE,'readwrite');
+    tx.objectStore(AXIOM.STORE).put(entry);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+function idbDelete(id){
+  return new Promise((resolve,reject)=>{
+    if(!AXIOM.DB) return reject(new Error('DB fechada'));
+    const tx=AXIOM.DB.transaction(AXIOM.STORE,'readwrite');
+    tx.objectStore(AXIOM.STORE).delete(id);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+function idbGetAll(){
+  return new Promise((resolve,reject)=>{
+    if(!AXIOM.DB) return reject(new Error('DB fechada'));
+    const tx=AXIOM.DB.transaction(AXIOM.STORE,'readonly');
+    const req=tx.objectStore(AXIOM.STORE).getAll();
+    req.onsuccess=()=>resolve(req.result||[]);
+    req.onerror=()=>reject(req.error);
+  });
+}
+function idbClear(){
+  return new Promise((resolve,reject)=>{
+    if(!AXIOM.DB) return reject(new Error('DB fechada'));
+    const tx=AXIOM.DB.transaction(AXIOM.STORE,'readwrite');
+    tx.objectStore(AXIOM.STORE).clear();
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+
+async function save(){
+  try{
+    if(!AXIOM.DB) await openDB();
+    await idbClear();
+    for(const e of AXIOM.ENTRIES) await idbPut(e);
+  }catch(err){
+    console.error(err);
+    flash('Erro ao salvar: '+err.message,'error');
+  }
+}
+
+async function loadLocal(){
+  try{
+    await openDB();
+    const all=await idbGetAll();
+    if(all && all.length){
+      all.sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||''));
+      // normaliza entradas antigas (dataURL → Blob)
+      for(const e of all){
+        await normalizeEntry(e);
+      }
+      AXIOM.ENTRIES=all;
+      return;
+    }
+  }catch(e){
+    console.error('loadLocal',e);
+  }
+}
+
+/* ========== Helpers de mídia (SEM FileReader na adição) ========== */
+function fileToMedia(file){
+  // File já é um Blob. Não precisamos de FileReader.
+  // clone com slice() para o Blob sobreviver quando o input for limpo
+  if(file.size > AXIOM.MAX_FILE) throw new Error('Arquivo > 200MB');
+  const blob = file.slice(0, file.size, file.type || 'application/octet-stream');
+  return {
+    blob: blob,
+    name: file.name || 'arquivo',
+    size: file.size,
+    type: file.type || 'application/octet-stream'
+  };
+}
+
+function getObjectURL(media){
+  if(!media) return '';
+  // se já for dataURL antiga
+  if(typeof media === 'string' && media.startsWith('data:')) return media;
+  if(media.data && typeof media.data === 'string' && media.data.startsWith('data:')) return media.data;
+  // Blob
+  const blob = media.blob || media;
+  if(!(blob instanceof Blob)) return '';
+  const key = media.name + '_' + media.size + '_' + (media.type||'');
+  if(AXIOM.urlCache.has(key)) return AXIOM.urlCache.get(key);
+  const url = URL.createObjectURL(blob);
+  AXIOM.urlCache.set(key, url);
+  return url;
+}
+
+function downloadMedia(media, fallbackName){
+  const name = (media && media.name) || fallbackName || 'arquivo';
+  let blob = null;
+  if(media && media.blob instanceof Blob) blob = media.blob;
+  else if(media instanceof Blob) blob = media;
+  else if(typeof media === 'string' && media.startsWith('data:')){
+    // dataURL legada
+    try{
+      const arr = media.split(',');
+      const mime = (arr[0].match(/:(.*?);/)||[])[1] || 'application/octet-stream';
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8 = new Uint8Array(n);
+      while(n--) u8[n] = bstr.charCodeAt(n);
+      blob = new Blob([u8], {type: mime});
+    }catch(e){ flash('Falha no download','error'); return; }
+  } else if(media && media.data && typeof media.data === 'string'){
+    return downloadMedia(media.data, name);
+  }
+  if(!blob){ flash('Arquivo inválido','error'); return; }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 2000);
+  flash('Download iniciado','success');
+}
+
+function viewPDF(media){
+  let blob = null;
+  if(media && media.blob instanceof Blob) blob = media.blob;
+  else if(typeof media === 'string' && media.startsWith('data:')){
+    try{
+      const arr = media.split(',');
+      const mime = (arr[0].match(/:(.*?);/)||[])[1] || 'application/pdf';
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8 = new Uint8Array(n);
+      while(n--) u8[n] = bstr.charCodeAt(n);
+      blob = new Blob([u8], {type: mime});
+    }catch(e){}
+  } else if(media && media.data) return viewPDF(media.data);
+  if(!blob){ flash('Não foi possível abrir o PDF','error'); return; }
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(()=>URL.revokeObjectURL(url), 120000);
+}
+
+// Converte entrada antiga (dataURL) para o novo formato com Blob
+async function normalizeEntry(e){
+  const toBlob = (dataURL) => new Promise(resolve=>{
+    if(!dataURL || typeof dataURL !== 'string' || !dataURL.startsWith('data:')){ resolve(null); return; }
+    fetch(dataURL).then(r=>r.blob()).then(b=>resolve(b)).catch(()=>resolve(null));
+  });
+
+  if(e.type === 'image' || e.type === 'audio' || e.type === 'video' || e.type === 'file'){
+    if(typeof e.content === 'string' && e.content.startsWith('data:')){
+      const b = await toBlob(e.content);
+      if(b){
+        e.media = { blob: b, name: e.fileName || 'arquivo', size: b.size, type: b.type };
+        delete e.content; // remove dataURL pesada
+      }
+    }
+  }
+  if(e.type === 'complete'){
+    for(const key of ['images','audios','videos','files']){
+      if(!Array.isArray(e[key])) continue;
+      for(let i=0;i<e[key].length;i++){
+        const item = e[key][i];
+        if(item && typeof item.data === 'string' && item.data.startsWith('data:')){
+          const b = await toBlob(item.data);
+          if(b){
+            e[key][i] = { blob: b, name: item.name || 'arquivo', size: b.size || item.size, type: b.type || item.type };
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ========== RENDER ========== */
+function renderCompleteBody(e){
+  let html = '';
+  if(e.text) html += `<div style="margin-bottom:10px">${esc(e.text).replace(/\n/g,'<br>')}</div>`;
+  if(e.links && e.links.length){
+    html += '<div style="margin-bottom:10px">';
+    e.links.forEach(l => { html += `<div><a href="${esc(l)}" target="_blank" rel="noopener">🔗 ${esc(l)}</a></div>`; });
+    html += '</div>';
+  }
+  if(e.images && e.images.length){
+    e.images.forEach(img => {
+      const src = getObjectURL(img);
+      html += `<img src="${esc(src)}" alt="${esc(img.name||'')}" style="max-width:100%;max-height:280px;display:block;margin:6px auto;border:1px solid #ccc" onerror="this.style.display='none'">`;
+    });
+  }
+  if(e.audios && e.audios.length){
+    e.audios.forEach(a => {
+      const src = getObjectURL(a);
+      html += `<div style="margin:6px 0"><div style="font-size:11px;color:#555">🎵 ${esc(a.name||'áudio')}</div>
+        <audio controls preload="metadata" src="${esc(src)}" style="width:100%"></audio></div>`;
+    });
+  }
+  if(e.videos && e.videos.length){
+    e.videos.forEach(v => {
+      const src = getObjectURL(v);
+      html += `<div style="margin:6px 0"><div style="font-size:11px;color:#555">🎬 ${esc(v.name||'vídeo')}</div>
+        <video controls preload="metadata" src="${esc(src)}" style="max-width:100%;max-height:280px"></video></div>`;
+    });
+  }
+  if(e.files && e.files.length){
+    e.files.forEach((f, idx) => {
+      const isPdf = (f.type||'').includes('pdf') || (f.name||'').toLowerCase().endsWith('.pdf');
+      html += `<div class="file-download-box" style="margin:6px 0">📎 ${esc(f.name||'arquivo')} <small>(${((f.size||0)/1024).toFixed(1)} KB)</small><br><br>
+        <button class="btn btn-red btn-dl" data-id="${esc(e.id)}" data-idx="${idx}" data-kind="complete">⬇ BAIXAR</button>
+        ${isPdf ? `<button class="btn btn-cyan btn-viewpdf" data-id="${esc(e.id)}" data-idx="${idx}" style="margin-left:6px">👁 VER PDF</button>` : ''}
+        </div>`;
+    });
+  }
+  return html || '<em>Sem conteúdo</em>';
+}
+
+function buildEntryCard(e){
+  const c = e.color || (e.password ? 'red' : 'green');
+  const locked = e.password && !AXIOM.UNLOCKED.has(e.id);
+  let body = '';
+
+  if(locked){
+    body = `<div class="axiom-restricted">🔒 RESTRITO<br><small>Conteúdo protegido por senha</small><br><br>
+      <button class="btn btn-red btn-unlock" data-id="${esc(e.id)}">INSERIR SENHA</button></div>`;
+  } else if(e.type === 'complete'){
+    body = renderCompleteBody(e);
+  } else if(e.type === 'image'){
+    const src = getObjectURL(e.media || e.content);
+    body = src ? `<img src="${esc(src)}" onerror="this.parentNode.innerHTML='<div style=color:#a40000>Imagem inválida</div>'">` : 'SEM IMAGEM';
+  } else if(e.type === 'audio'){
+    const src = getObjectURL(e.media || e.content);
+    body = src ? `<audio controls preload="metadata" src="${esc(src)}" style="width:100%"></audio>` : 'SEM ÁUDIO';
+  } else if(e.type === 'video'){
+    const src = getObjectURL(e.media || e.content);
+    body = src ? `<video controls preload="metadata" src="${esc(src)}" style="max-width:100%;max-height:300px"></video>` : 'SEM VÍDEO';
+  } else if(e.type === 'file'){
+    const media = e.media || e.content;
+    const name = (e.media && e.media.name) || e.fileName || 'arquivo';
+    const isPdf = (name||'').toLowerCase().endsWith('.pdf') || (e.media && (e.media.type||'').includes('pdf'));
+    body = media ? `<div class="file-download-box">📎 ${esc(name)}<br><br>
+      <button class="btn btn-red btn-dl" data-id="${esc(e.id)}" data-kind="simple">⬇ BAIXAR</button>
+      ${isPdf ? `<button class="btn btn-cyan btn-viewpdf" data-id="${esc(e.id)}" data-kind="simple" style="margin-left:6px">👁 VER PDF</button>` : ''}
+      </div>` : 'SEM ARQUIVO';
+  } else if(e.type === 'link'){
+    body = `<a href="${esc(e.content)}" target="_blank" rel="noopener">🔗 ${esc(e.content)}</a>`;
+  } else {
+    body = esc(e.content || '').replace(/\n/g, '<br>');
+  }
+
+  return `<div class="entry-card" style="--c:${color(c)}" data-id="${esc(e.id)}">
+    <div class="entry-header">
+      <div class="entry-title">${icon(e.type)} ${esc(e.title)}
+        <span class="axiom-classification" style="background:${color(c)}">${label(c)}</span>
+      </div>
+      <div class="entry-timestamp">${fmt(e.timestamp)}</div>
+    </div>
+    <div class="entry-content">${body}</div>
+    <div class="entry-actions">
+      <button class="btn btn-detail" data-id="${esc(e.id)}">DETALHES</button>
+      <button class="btn btn-red btn-del" data-id="${esc(e.id)}">EXCLUIR</button>
+      <span class="entry-status">${e.password ? (locked ? '🔒' : '🔓') : '🔓'}</span>
+    </div>
+  </div>`;
+}
+
+function updateTagNav(){
+  const tags = new Set();
+  AXIOM.ENTRIES.forEach(e => { if(e.tags && e.tags.length) e.tags.forEach(t => tags.add(t)); });
+  const sorted = [...tags].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  const box = document.getElementById('tagNav');
+  let html = `<div class="nav-tag ${AXIOM.FILTER_TAG===''?'active':''}" data-tag="">🏷 TODAS AS TAGS</div>`;
+  sorted.forEach(t => {
+    html += `<div class="nav-tag ${AXIOM.FILTER_TAG===t?'active':''}" data-tag="${esc(t)}"># ${esc(t)}</div>`;
+  });
+  box.innerHTML = html;
+}
+
+function render(){
+  const box = document.getElementById('entriesContainer');
+  let list = AXIOM.ENTRIES;
+  if(AXIOM.FILTER !== 'all') list = list.filter(e => e.type === AXIOM.FILTER);
+  if(AXIOM.FILTER_TAG) list = list.filter(e => e.tags && e.tags.includes(AXIOM.FILTER_TAG));
+  document.getElementById('statusCount').textContent = AXIOM.ENTRIES.length;
+  updateTagNav();
+
+  if(!list.length){
+    box.innerHTML = '<div style="text-align:center;padding:40px;color:#666">[ NENHUMA ENTRADA ]</div>';
+    return;
+  }
+
+  const groups = {};
+  const noTag = [];
+  list.forEach(e => {
+    if(e.tags && e.tags.length){
+      e.tags.forEach(t => {
+        if(!groups[t]) groups[t] = [];
+        if(!groups[t].some(x => x.id === e.id)) groups[t].push(e);
+      });
+    } else noTag.push(e);
+  });
+
+  const sortedTags = Object.keys(groups).sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  let html = '';
+  sortedTags.forEach(tag => {
+    html += `<div class="tag-header">🏷 ${esc(tag)} <span class="tag-count">${groups[tag].length} arquivo(s)</span></div>`;
+    groups[tag].forEach(e => { html += buildEntryCard(e); });
+  });
+  if(noTag.length){
+    html += `<div class="tag-header sem-tag">📁 SEM TAGS <span class="tag-count">${noTag.length} arquivo(s)</span></div>`;
+    noTag.forEach(e => { html += buildEntryCard(e); });
+  }
+  box.innerHTML = html;
+}
+
+function askPassword(entry, onSuccess){
+  const pwd = prompt('Digite a senha da entrada:');
+  if(pwd === null) return;
+  if(String(pwd).trim() === String(entry.password || '').trim()){
+    AXIOM.UNLOCKED.add(entry.id);
+    flash('Acesso concedido','success');
+    onSuccess();
+  } else flash('Senha incorreta','error');
+}
+
+function showDetail(id){
+  const e = AXIOM.ENTRIES.find(x => x.id === id);
+  if(!e) return;
+  const doShow = () => {
+    const panel = document.getElementById('entryDetails');
+    let html = `<div style="font-family:Orbitron,monospace;color:#00f0ff;margin-bottom:6px">${icon(e.type)} ${esc(e.title)}</div>
+      <div style="font-size:10px;color:#666;margin-bottom:8px">${fmt(e.timestamp)}</div>
+      <div style="margin-bottom:6px"><span class="axiom-classification" style="background:${color(e.color||'green')}">${label(e.color||'green')}</span></div>`;
+    if(e.type === 'complete') html += renderCompleteBody(e);
+    else if(e.type === 'image'){
+      const src = getObjectURL(e.media || e.content);
+      if(src) html += `<img src="${esc(src)}" style="max-width:100%;border:1px solid #444">`;
+    } else if(e.type === 'audio'){
+      const src = getObjectURL(e.media || e.content);
+      if(src) html += `<audio controls preload="metadata" src="${esc(src)}" style="width:100%"></audio>`;
+    } else if(e.type === 'video'){
+      const src = getObjectURL(e.media || e.content);
+      if(src) html += `<video controls preload="metadata" src="${esc(src)}" style="max-width:100%"></video>`;
+    } else if(e.type === 'file'){
+      const name = (e.media && e.media.name) || e.fileName || 'arquivo';
+      html += `<button class="btn btn-red btn-dl" data-id="${esc(e.id)}" data-kind="simple" style="margin-top:6px">⬇ ${esc(name)}</button>`;
+      if((name||'').toLowerCase().endsWith('.pdf')) html += `<button class="btn btn-cyan btn-viewpdf" data-id="${esc(e.id)}" data-kind="simple" style="margin-left:6px;margin-top:6px">👁 VER PDF</button>`;
+    } else if(e.type === 'link') html += `<a href="${esc(e.content)}" target="_blank" style="color:#00f0ff">${esc(e.content)}</a>`;
+    else html += esc(e.content || '').replace(/\n/g, '<br>');
+    if(e.tags && e.tags.length) html += `<div style="margin-top:8px;font-size:10px;color:#888">${e.tags.map(t => '#'+esc(t)).join(' ')}</div>`;
+    panel.innerHTML = html;
+  };
+  if(e.password && !AXIOM.UNLOCKED.has(e.id)) askPassword(e, doShow);
+  else doShow();
+}
+
+/* ========== Forms ========== */
+function showForm(){ hideCompleteForm(); document.getElementById('newEntryForm').classList.remove('hidden'); }
+function hideForm(){
+  document.getElementById('newEntryForm').classList.add('hidden');
+  document.getElementById('newTitle').value = '';
+  document.getElementById('newContent').value = '';
+  document.getElementById('newTags').value = '';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('newFile').value = '';
+  document.getElementById('mediaPreview').innerHTML = '';
+  AXIOM.COLOR = 'green';
+  document.querySelectorAll('#colorRow button').forEach(b => b.classList.remove('selected'));
+  document.querySelector('#colorRow .axiom-green')?.classList.add('selected');
+}
+function showCompleteForm(){ hideForm(); document.getElementById('completeEntryForm').classList.remove('hidden'); }
+function hideCompleteForm(){
+  document.getElementById('completeEntryForm').classList.add('hidden');
+  document.getElementById('compTitle').value = '';
+  document.getElementById('compText').value = '';
+  document.getElementById('compLinks').value = '';
+  document.getElementById('compTags').value = '';
+  document.getElementById('compPassword').value = '';
+  document.getElementById('compImages').value = '';
+  document.getElementById('compAudio').value = '';
+  document.getElementById('compVideo').value = '';
+  document.getElementById('compFiles').value = '';
+  document.getElementById('compImagesPreview').innerHTML = '';
+  document.getElementById('compAudioPreview').innerHTML = '';
+  document.getElementById('compVideoPreview').innerHTML = '';
+  document.getElementById('compFilesPreview').innerHTML = '';
+  AXIOM.COMP_COLOR = 'green';
+  document.querySelectorAll('#compColorRow button').forEach(b => b.classList.remove('selected'));
+  document.querySelector('#compColorRow .axiom-green')?.classList.add('selected');
+}
+function updateType(){
+  const t = document.getElementById('newType').value;
+  const media = ['image','audio','video','file'].includes(t);
+  document.getElementById('contentWrap').style.display = media ? 'none' : 'block';
+  document.getElementById('mediaWrap').style.display = media ? 'block' : 'none';
+  document.getElementById('newFile').accept = {image:'image/*',audio:'audio/*',video:'video/*',file:'*/*'}[t] || '*/*';
+  document.getElementById('mediaLabel').textContent = {image:'IMAGEM',audio:'ÁUDIO',video:'VÍDEO',file:'ARQUIVO (PDF, ZIP, DOC...)'}[t] || 'ARQUIVO';
+}
+
+async function addEntry(){
+  const title = document.getElementById('newTitle').value.trim();
+  const type = document.getElementById('newType').value;
+  const tags = document.getElementById('newTags').value.trim();
+  const password = document.getElementById('newPassword').value.trim();
+  if(!title){ flash('Preencha o título','error'); return; }
+
+  try{
+    let entry = {
+      id: uid(),
+      title,
+      type,
+      tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+      password: password || null,
+      color: AXIOM.COLOR,
+      timestamp: new Date().toISOString()
+    };
+
+    if(['image','audio','video','file'].includes(type)){
+      const file = document.getElementById('newFile').files?.[0];
+      if(!file){ flash('Selecione um arquivo','error'); return; }
+      // SEM FileReader — usa o File direto (já clonado em fileToMedia)
+      entry.media = fileToMedia(file);
+      entry.fileName = file.name;
+    } else {
+      entry.content = document.getElementById('newContent').value.trim();
+    }
+
+    AXIOM.ENTRIES.unshift(entry);
+    await save();
+    render();
+    // limpa campos mantendo o formulário aberto
+    document.getElementById('newTitle').value = '';
+    document.getElementById('newContent').value = '';
+    document.getElementById('newTags').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('newFile').value = '';
+    document.getElementById('mediaPreview').innerHTML = '';
+    flash('Entrada adicionada!','success');
+  }catch(err){
+    console.error(err);
+    flash(err.message || 'Erro ao adicionar','error');
+  }
+}
+
+async function addCompleteEntry(){
+  const title = document.getElementById('compTitle').value.trim();
+  if(!title){ flash('Preencha o título','error'); return; }
+
+  try{
+    const text = document.getElementById('compText').value.trim();
+    const linksRaw = document.getElementById('compLinks').value.trim();
+    const links = linksRaw ? linksRaw.split('\n').map(l => l.trim()).filter(Boolean) : [];
+    const tags = document.getElementById('compTags').value.trim();
+    const password = document.getElementById('compPassword').value.trim();
+
+    const images = [], audios = [], videos = [], files = [];
+    // Array.from evita problemas com FileList em alguns navegadores
+    Array.from(document.getElementById('compImages').files || []).forEach(f => images.push(fileToMedia(f)));
+    Array.from(document.getElementById('compAudio').files || []).forEach(f => audios.push(fileToMedia(f)));
+    Array.from(document.getElementById('compVideo').files || []).forEach(f => videos.push(fileToMedia(f)));
+    Array.from(document.getElementById('compFiles').files || []).forEach(f => files.push(fileToMedia(f)));
+
+    if(!text && !links.length && !images.length && !audios.length && !videos.length && !files.length){
+      flash('Adicione pelo menos um conteúdo (texto, link ou arquivo)','error'); return;
+    }
+
+    const entry = {
+      id: uid(),
+      title,
+      type: 'complete',
+      text: text || '',
+      links,
+      images,
+      audios,
+      videos,
+      files,
+      tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+      password: password || null,
+      color: AXIOM.COMP_COLOR,
+      timestamp: new Date().toISOString()
+    };
+
+    // NÃO esconde o form — só limpa os campos para poder adicionar de novo
+    AXIOM.ENTRIES.unshift(entry);
+    await save();
+    render();
+    // limpa campos mantendo o formulário aberto
+    document.getElementById('compTitle').value = '';
+    document.getElementById('compText').value = '';
+    document.getElementById('compLinks').value = '';
+    document.getElementById('compTags').value = '';
+    document.getElementById('compPassword').value = '';
+    document.getElementById('compImages').value = '';
+    document.getElementById('compAudio').value = '';
+    document.getElementById('compVideo').value = '';
+    document.getElementById('compFiles').value = '';
+    document.getElementById('compImagesPreview').innerHTML = '';
+    document.getElementById('compAudioPreview').innerHTML = '';
+    document.getElementById('compVideoPreview').innerHTML = '';
+    document.getElementById('compFilesPreview').innerHTML = '';
+    flash('Entrada Completa adicionada!','success');
+  }catch(err){
+    console.error(err);
+    flash(err.message || 'Erro ao processar arquivos','error');
+  }
+}
+
+async function deleteEntry(id){
+  if(!confirm('Excluir esta entrada?')) return;
+  AXIOM.ENTRIES = AXIOM.ENTRIES.filter(e => e.id !== id);
+  AXIOM.UNLOCKED.delete(id);
+  AXIOM.SELECTED.delete(id);
+  try{ await idbDelete(id); }catch(_){}
+  await save();
+  render();
+  flash('Excluída','success');
+}
+
+/* ========== Export / Load (converte Blob ↔ dataURL só na exportação) ========== */
+function blobToDataURL(blob){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(new Error('Falha ao converter'));
+    r.readAsDataURL(blob);
+  });
+}
+
+async function entryToExportable(e){
+  const out = {...e};
+  // remove blobs e coloca dataURL só para o arquivo de export
+  if(e.media && e.media.blob instanceof Blob){
+    out.content = await blobToDataURL(e.media.blob);
+    out.fileName = e.media.name;
+    delete out.media;
+  }
+  if(e.type === 'complete'){
+    for(const key of ['images','audios','videos','files']){
+      if(!Array.isArray(e[key])) continue;
+      out[key] = [];
+      for(const item of e[key]){
+        if(item.blob instanceof Blob){
+          out[key].push({
+            data: await blobToDataURL(item.blob),
+            name: item.name,
+            size: item.size,
+            type: item.type
+          });
+        } else if(item.data){
+          out[key].push(item);
+        }
+      }
+    }
+  }
+  return out;
+}
+
+async function doExport(){
+  try{
+    flash('Preparando exportação...','');
+    const exportEntries = [];
+    for(const e of AXIOM.ENTRIES){
+      exportEntries.push(await entryToExportable(e));
+    }
+    const data = {
+      app: 'AXIOM FILES',
+      format: 'BACKUPS.axiom',
+      version: '2.9',
+      taskForce: 'LUA PALIDA',
+      entries: exportEntries,
+      passwords: AXIOM.PASSWORDS,
+      exportedAt: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'BACKUPS.axiom';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    flash('Exportado!','success');
+  }catch(err){
+    flash('Erro no export: '+err.message,'error');
+  }
+}
+
+function doLoad(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.axiom,.json';
+  input.onchange = async () => {
+    const f = input.files?.[0];
+    if(!f) return;
+    try{
+      const text = await f.text();
+      const d = JSON.parse(text);
+      if(!Array.isArray(d.entries)) throw new Error('Formato inválido');
+      // normaliza dataURLs → Blobs
+      for(const e of d.entries) await normalizeEntry(e);
+      AXIOM.ENTRIES = d.entries;
+      if(Array.isArray(d.passwords)) AXIOM.PASSWORDS = d.passwords;
+      AXIOM.UNLOCKED.clear();
+      AXIOM.SELECTED.clear();
+      await save();
+      render();
+      flash(`Carregado: ${d.entries.length} entradas`,'success');
+    }catch(err){
+      flash('Arquivo inválido: '+err.message,'error');
+    }
+  };
+  input.click();
+}
+
+function doMerge(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.axiom,.json';
+  input.onchange = async () => {
+    const f = input.files?.[0];
+    if(!f) return;
+    try{
+      const text = await f.text();
+      const d = JSON.parse(text);
+      if(!Array.isArray(d.entries)) throw new Error('Formato inválido');
+      const ids = new Set(AXIOM.ENTRIES.map(e => e.id));
+      let added = 0;
+      for(const e of d.entries){
+        if(!ids.has(e.id)){
+          await normalizeEntry(e);
+          AXIOM.ENTRIES.push(e);
+          ids.add(e.id);
+          added++;
+        }
+      }
+      await save();
+      render();
+      flash(`Mesclado: +${added}`,'success');
+    }catch(err){
+      flash('Erro ao mesclar','error');
+    }
+  };
+  input.click();
+}
+
+function bindPreview(inputId, previewId){
+  const input=document.getElementById(inputId);
+  const prev=document.getElementById(previewId);
+  let urls=[];
+  input.onchange=function(){
+    urls.forEach(u=>URL.revokeObjectURL(u)); urls=[];
+    const files=[...(this.files||[])];
+    if(!files.length){prev.innerHTML='';return;}
+    prev.innerHTML='';
+    files.forEach(f=>{
+      const url=URL.createObjectURL(f); urls.push(url);
+      const box=document.createElement('div');
+      box.style.margin='6px 0';
+      if(f.type.startsWith('image/')) box.innerHTML=`<img src="${url}" style="max-width:120px;max-height:120px;border:1px solid #999"><div>${f.name}</div>`;
+      else if(f.type.startsWith('video/')) box.innerHTML=`<video controls src="${url}" style="max-width:160px;max-height:100px"></video><div>${f.name}</div>`;
+      else if(f.type.startsWith('audio/')) box.innerHTML=`<audio controls src="${url}" style="width:180px"></audio><div>${f.name}</div>`;
+      else box.innerHTML=`📎 ${f.name} (${(f.size/1024).toFixed(1)} KB)`;
+      prev.appendChild(box);
+    });
+  };
+}
+
+function bind(){
+  document.getElementById('btnNew').onclick = showForm;
+  document.getElementById('btnNew2').onclick = showForm;
+  document.getElementById('btnCancel').onclick = hideForm;
+  document.getElementById('btnAdd').onclick = addEntry;
+  document.getElementById('btnNewComplete').onclick = showCompleteForm;
+  document.getElementById('btnNewComplete2').onclick = showCompleteForm;
+  document.getElementById('btnCancelComplete').onclick = hideCompleteForm;
+  document.getElementById('btnAddComplete').onclick = addCompleteEntry;
+  document.getElementById('btnExport').onclick = doExport;
+  document.getElementById('btnExport2').onclick = doExport;
+  document.getElementById('btnLoad').onclick = doLoad;
+  document.getElementById('btnLoad2').onclick = doLoad;
+  document.getElementById('btnMerge').onclick = doMerge;
+  document.getElementById('btnSave').onclick = async () => { await save(); flash('Salvo!','success'); };
+  document.getElementById('btnSave2').onclick = async () => { await save(); flash('Salvo!','success'); };
+  document.getElementById('btnDebug').onclick = () => document.getElementById('debugOverlay').classList.add('active');
+  document.getElementById('btnCloseDebug').onclick = () => document.getElementById('debugOverlay').classList.remove('active');
+  document.getElementById('btnDebugExec').onclick = () => {
+    const cmd = document.getElementById('debugInput').value.trim();
+    document.getElementById('debugConsole').textContent += '\n$ ' + cmd + '\n[OK]';
+    document.getElementById('debugInput').value = '';
+  };
+  document.getElementById('btnPass').onclick = () => flash('Use as senhas das próprias entradas','success');
+  document.getElementById('btnKali').onclick = () => flash('nmap • sqlmap • ffuf • gobuster • amass','success');
+  document.getElementById('btnClone').onclick = async () => { await save(); flash('Use EXPORT para clonar','success'); };
+  document.getElementById('btnControl').onclick = () => {
+    const p = prompt('Senha do painel:');
+    if(p === AXIOM.MASTER) flash('Painel liberado','success');
+    else flash('Acesso negado','error');
+  };
+  document.getElementById('btnSelectAll').onclick = () => {
+    const list = AXIOM.FILTER === 'all' ? AXIOM.ENTRIES : AXIOM.ENTRIES.filter(e => e.type === AXIOM.FILTER);
+    if(AXIOM.SELECTED.size === list.length) AXIOM.SELECTED.clear();
+    else list.forEach(e => AXIOM.SELECTED.add(e.id));
+    flash(AXIOM.SELECTED.size + ' selecionada(s)','success');
+  };
+  document.getElementById('btnDelSelected').onclick = async () => {
+    if(!AXIOM.SELECTED.size){ flash('Nenhuma selecionada','error'); return; }
+    if(!confirm(`Excluir ${AXIOM.SELECTED.size} entrada(s)?`)) return;
+    AXIOM.ENTRIES = AXIOM.ENTRIES.filter(e => !AXIOM.SELECTED.has(e.id));
+    AXIOM.SELECTED.clear();
+    await save();
+    render();
+    flash('Excluídas','success');
+  };
+  document.getElementById('newType').onchange = updateType;
+  document.querySelectorAll('#colorRow button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#colorRow button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      AXIOM.COLOR = btn.dataset.c;
+    };
+  });
+  document.querySelectorAll('#compColorRow button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#compColorRow button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      AXIOM.COMP_COLOR = btn.dataset.c;
+    };
+  });
+  let previewURL = null;
+  document.getElementById('newFile').onchange = function(){
+    const f = this.files?.[0];
+    const prev = document.getElementById('mediaPreview');
+    if(previewURL){ URL.revokeObjectURL(previewURL); previewURL = null; }
+    if(!f){ prev.innerHTML=''; return; }
+
+    const type = document.getElementById('newType').value;
+    previewURL = URL.createObjectURL(f);
+
+    if(type === 'image'){
+      prev.innerHTML = `<img style="max-width:140px;border:1px solid #ccc" src="${previewURL}">`;
+    }else if(type === 'video'){
+      prev.innerHTML = `<video controls style="max-width:180px;max-height:120px" src="${previewURL}"></video>`;
+    }else if(type === 'audio'){
+      prev.innerHTML = `<audio controls style="width:180px" src="${previewURL}"></audio>`;
+    }else{
+      prev.innerHTML = `<div style="font-size:12px;color:#333">📎 ${esc(f.name)} (${(f.size/1024).toFixed(1)} KB)</div>`;
+    }
+  };
+  bindPreview('compImages','compImagesPreview');
+  bindPreview('compAudio','compAudioPreview');
+  bindPreview('compVideo','compVideoPreview');
+  bindPreview('compFiles','compFilesPreview');
+  document.querySelectorAll('.nav-item[data-filter]').forEach(el => {
+    el.onclick = () => {
+      document.querySelectorAll('.nav-item[data-filter]').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
+      AXIOM.FILTER = el.dataset.filter;
+      const labels = {all:'📋 TODAS',text:'📝 TEXTO',image:'🖼 IMAGEM',link:'🔗 LINK',audio:'🎵 ÁUDIO',video:'🎬 VÍDEO',file:'📎 ARQUIVO',complete:'📦 COMPLETA'};
+      document.getElementById('centerTitle').textContent = labels[AXIOM.FILTER] || 'ENTRADAS';
+      render();
+    };
+  });
+  document.getElementById('tagNav').onclick = e => {
+    const t = e.target.closest('.nav-tag');
+    if(!t) return;
+    document.querySelectorAll('.nav-tag').forEach(n => n.classList.remove('active'));
+    t.classList.add('active');
+    AXIOM.FILTER_TAG = t.dataset.tag || '';
+    render();
+  };
+  document.getElementById('entriesContainer').onclick = e => {
+    const t = e.target.closest('button');
+    if(!t) return;
+    const id = t.dataset.id;
+    if(!id) return;
+    if(t.classList.contains('btn-del')) deleteEntry(id);
+    else if(t.classList.contains('btn-detail') || t.classList.contains('btn-unlock')) showDetail(id);
+    else if(t.classList.contains('btn-dl')){
+      const entry = AXIOM.ENTRIES.find(x => x.id === id);
+      if(!entry) return;
+      if(t.dataset.kind === 'simple') downloadMedia(entry.media || entry.content, entry.fileName);
+      else if(t.dataset.kind === 'complete'){
+        const idx = parseInt(t.dataset.idx, 10);
+        if(entry.files && entry.files[idx]) downloadMedia(entry.files[idx]);
+      }
+    } else if(t.classList.contains('btn-viewpdf')){
+      const entry = AXIOM.ENTRIES.find(x => x.id === id);
+      if(!entry) return;
+      if(t.dataset.kind === 'simple') viewPDF(entry.media || entry.content);
+      else if(t.dataset.kind === 'complete'){
+        const idx = parseInt(t.dataset.idx, 10);
+        if(entry.files && entry.files[idx]) viewPDF(entry.files[idx]);
+      }
+    }
+  };
+  document.getElementById('entryDetails').onclick = e => {
+    const t = e.target.closest('button');
+    if(!t) return;
+    const id = t.dataset.id;
+    const entry = AXIOM.ENTRIES.find(x => x.id === id);
+    if(!entry) return;
+    if(t.classList.contains('btn-dl') && t.dataset.kind === 'simple') downloadMedia(entry.media || entry.content, entry.fileName);
+    if(t.classList.contains('btn-viewpdf') && t.dataset.kind === 'simple') viewPDF(entry.media || entry.content);
+  };
+  
+// v4.0 Stable - previews completos
+['compImages','compAudio','compVideo','compFiles'].forEach((id,i)=>{
+  bindPreview(id,['compImagesPreview','compAudioPreview','compVideoPreview','compFilesPreview'][i]);
+});
+
+// Libera URLs ao excluir entrada
+const __oldDelete=deleteEntry;
+deleteEntry=async function(id){
+  const e=AXIOM.ENTRIES.find(x=>x.id===id);
+  if(e){
+    const revoke=m=>{const u=getObjectURL(m); if(u.startsWith('blob:')) try{URL.revokeObjectURL(u);}catch(_){}};
+    if(e.media) revoke(e.media);
+    ['images','audios','videos','files'].forEach(k=>(e[k]||[]).forEach(revoke));
+  }
+  return __oldDelete(id);
+};
+
+function tick(){ document.getElementById('statusTime').textContent = new Date().toLocaleString('pt-BR'); }
+  tick(); setInterval(tick, 1000);
+}
+
+(async function init(){
+  try{
+    await loadLocal();
+    bind();
+['newFile','compImages','compAudio','compVideo','compFiles'].forEach(id=>{const el=document.getElementById(id); if(!el)return; const p=el.parentElement; ['dragenter','dragover'].forEach(ev=>p.addEventListener(ev,e=>{e.preventDefault();p.classList.add('drop-hover')})); ['dragleave','drop'].forEach(ev=>p.addEventListener(ev,e=>{e.preventDefault();p.classList.remove('drop-hover')})); p.addEventListener('drop',e=>{if(e.dataTransfer.files.length){el.files=e.dataTransfer.files; el.dispatchEvent(new Event('change'));}});});
+    render();
+    window.addEventListener('beforeunload',()=>{
+      try{
+        AXIOM.urlCache.forEach(u=>URL.revokeObjectURL(u));
+        AXIOM.urlCache.clear();
+        if(previewURL) URL.revokeObjectURL(previewURL);
+      }catch(_){}
+    });
+    console.log('%c[AXIOM] v4.0 — Stable','color:#00f0ff;font-weight:bold');
+  }catch(err){
+    console.error(err);
+    flash('Falha ao iniciar: '+err.message,'error');
+    bind();
+['newFile','compImages','compAudio','compVideo','compFiles'].forEach(id=>{const el=document.getElementById(id); if(!el)return; const p=el.parentElement; ['dragenter','dragover'].forEach(ev=>p.addEventListener(ev,e=>{e.preventDefault();p.classList.add('drop-hover')})); ['dragleave','drop'].forEach(ev=>p.addEventListener(ev,e=>{e.preventDefault();p.classList.remove('drop-hover')})); p.addEventListener('drop',e=>{if(e.dataTransfer.files.length){el.files=e.dataTransfer.files; el.dispatchEvent(new Event('change'));}});});
+    render();
+  }
+})();
+})();
+</script>
+</body>
+</html>
