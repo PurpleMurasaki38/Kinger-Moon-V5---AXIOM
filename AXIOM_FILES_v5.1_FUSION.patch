@@ -1,0 +1,70 @@
+--- AXIOM_FILES_v4.0_STABLE.html
++++ AXIOM_FILES_v5.1_FUSION.html
+@@ -222,7 +222,7 @@
+     </div>
+   </div>
+   <div class="status-bar">
+-    <span>Λ X I O M FILES // LUA PÁLIDA // v4.0 · Stable</span>
++    <span>Λ X I O M FILES // LUA PÁLIDA // v5.0 · Hybrid Upload</span>
+     <span id="statusTime">—</span>
+   </div>
+ </div>
+@@ -457,7 +457,7 @@
+ }
+ 
+ /* ========== RENDER ========== */
+-function renderCompleteBody(e){
++async function await renderCompleteBody(e){
+   let html = '';
+   if(e.text) html += `<div style="margin-bottom:10px">${esc(e.text).replace(/\n/g,'<br>')}</div>`;
+   if(e.links && e.links.length){
+@@ -506,7 +506,7 @@
+     body = `<div class="axiom-restricted">🔒 RESTRITO<br><small>Conteúdo protegido por senha</small><br><br>
+       <button class="btn btn-red btn-unlock" data-id="${esc(e.id)}">INSERIR SENHA</button></div>`;
+   } else if(e.type === 'complete'){
+-    body = renderCompleteBody(e);
++    body = await renderCompleteBody(e);
+   } else if(e.type === 'image'){
+     const src = getObjectURL(e.media || e.content);
+     body = src ? `<img src="${esc(src)}" onerror="this.parentNode.innerHTML='<div style=color:#a40000>Imagem inválida</div>'">` : 'SEM IMAGEM';
+@@ -613,7 +613,7 @@
+     let html = `<div style="font-family:Orbitron,monospace;color:#00f0ff;margin-bottom:6px">${icon(e.type)} ${esc(e.title)}</div>
+       <div style="font-size:10px;color:#666;margin-bottom:8px">${fmt(e.timestamp)}</div>
+       <div style="margin-bottom:6px"><span class="axiom-classification" style="background:${color(e.color||'green')}">${label(e.color||'green')}</span></div>`;
+-    if(e.type === 'complete') html += renderCompleteBody(e);
++    if(e.type === 'complete') html += await renderCompleteBody(e);
+     else if(e.type === 'image'){
+       const src = getObjectURL(e.media || e.content);
+       if(src) html += `<img src="${esc(src)}" style="max-width:100%;border:1px solid #444">`;
+@@ -1100,6 +1100,23 @@
+   return __oldDelete(id);
+ };
+ 
++
++function createMediaPreview(input,preview){
++ let urls=[];
++ input.addEventListener('change',()=>{
++   urls.forEach(u=>URL.revokeObjectURL(u));urls=[];preview.innerHTML='';
++   [...input.files].forEach(f=>{
++     const u=URL.createObjectURL(f);urls.push(u);
++     const d=document.createElement('div');
++     if(f.type.startsWith('image/')) d.innerHTML=`<img src="${u}" style="max-width:120px;max-height:120px"><div>${f.name}</div>`;
++     else if(f.type.startsWith('video/')) d.innerHTML=`<video controls src="${u}" style="max-width:180px"></video><div>${f.name}</div>`;
++     else if(f.type.startsWith('audio/')) d.innerHTML=`<audio controls src="${u}"></audio><div>${f.name}</div>`;
++     else d.innerHTML=`📎 ${f.name}`;
++     preview.appendChild(d);
++   });
++ });
++}
++
+ function tick(){ document.getElementById('statusTime').textContent = new Date().toLocaleString('pt-BR'); }
+   tick(); setInterval(tick, 1000);
+ }
+@@ -1108,6 +1125,7 @@
+   try{
+     await loadLocal();
+     bind();
++[['newFile','mediaPreview'],['compImages','compImagesPreview'],['compAudio','compAudioPreview'],['compVideo','compVideoPreview'],['compFiles','compFilesPreview']].forEach(([i,p])=>{const I=document.getElementById(i),P=document.getElementById(p);if(I&&P)createMediaPreview(I,P);});
+ ['newFile','compImages','compAudio','compVideo','compFiles'].forEach(id=>{const el=document.getElementById(id); if(!el)return; const p=el.parentElement; ['dragenter','dragover'].forEach(ev=>p.addEventListener(ev,e=>{e.preventDefault();p.classList.add('drop-hover')})); ['dragleave','drop'].forEach(ev=>p.addEventListener(ev,e=>{e.preventDefault();p.classList.remove('drop-hover')})); p.addEventListener('drop',e=>{if(e.dataTransfer.files.length){el.files=e.dataTransfer.files; el.dispatchEvent(new Event('change'));}});});
+     render();
+     window.addEventListener('beforeunload',()=>{
